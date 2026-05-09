@@ -12,11 +12,13 @@
   <body>
     <!-- Navbar -->
     <header>
-      <h1>Welcome, {{name}}</h1>
+      <div class="user-profile">
+        <div class="avatar-wrapper">
+            <img src="{{ url_for('static', filename='profile-user-svgrepo-com.svg') }}" alt="User Profile" class="user-avatar">
+        </div>
+        <span class="user-name" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">{{name}}</span>
+      </div>
       <div class="header-controls">
-        <button onclick="downloadMonthlyReport()" class="report-btn" title="Download Performance Report">
-            <i class="fas fa-file-pdf"></i> Export Statement
-        </button>
         <button id="theme-switch">
           <div>&#9790;</div>
           <div>&#9728;</div>
@@ -33,6 +35,10 @@
             <button class="card-menu">&spades;</button>
           </div>
           <div class="amount income-amount"></div>
+          <div class="trend-indicator status-up">
+            <i class="trend-icon">↑</i> 
+            <span>12% from last month</span>
+          </div>
         </div>
 
         <div class="card dash-card_2">
@@ -41,6 +47,10 @@
             <button class="card-menu">&spades;</button>
           </div>
           <div class="amount expense-amount"></div>
+          <div class="trend-indicator status-down">
+            <i class="trend-icon">↓</i> 
+            <span>5% under budget</span>
+        </div>
         </div>
 
         <div class="card my-card">

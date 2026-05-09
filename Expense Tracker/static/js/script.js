@@ -174,17 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTransactionsTable();
 });
 
-//report download
-function downloadMonthlyReport() {
-    // Grab active month (e.g. from data payloads or a localized date object)
-    const activeDate = new Date(); // Or map to the active dashboard date variable
-    const monthString = activeDate.toISOString().slice(0, 7); // Generates "YYYY-MM" (e.g. "2026-05")
-    
-    // Redirect browser to trigger Flask's binary download stream
-    window.location.href = `/download-report/${monthString}`;
-}
-
-
 // dark mode
 
 const themeSwitch = document.getElementById("theme-switch");
@@ -220,7 +209,7 @@ items.forEach((item) => item.addEventListener("click", toggleAnimation));
 //Dynamic update of data visualization diagrams
 
 // 1. Global Chart Instances
-let barChart, doughnutChart;
+let areaChart, doughnutChart;
 
 // Initial Data Structures
 
@@ -232,7 +221,7 @@ const categoryData = {
 // 2. Initialize Charts on Page Load
 window.onload = () => {
   const now = new Date();
-const year = now.getFullYear();
+  const year = now.getFullYear();
 
 // Add 1 to month and pad with a leading zero if less than 10
 const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -244,91 +233,77 @@ const formattedDate = `${day}-${month}-${year}`;
 // Result: "2026-05-08"
 // Use a dot (.) for classes, just like in CSS
 document.querySelector('.date-picker').innerHTML = formattedDate;
-  const barCtx = document.getElementById("myChart").getContext("2d");
+  const ctx = document.getElementById("myChart").getContext("2d");
   const doughCtx = document.getElementById("myDough").getContext("2d");
-
-  // Bar Chart
-  barChart = new Chart(barCtx, {
-    type: "bar",
+  let samp_inc = [8598, 6019, 5451, 4628, 70, 70, 70, 70, 70, 70, 70],  samp_exp = [7030, 5903, 8921, 7636, 70, 70, 70, 70, 70, 70, 70], i = 0, j = 0;
+   areaChart = new Chart(ctx, {
+    type: 'line', // Area charts are technically 'line' charts in Chart.js
     data: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [
-            {
-                label: 'Expenses',
-                // Use the summary key from Flask
-                data: (user_data.monthly_exp_summary || []).map( val => {return val === 0 ? 80 : val;}), 
-                backgroundColor: '#ef4444'
-            },
-            {
-                label: 'Incomes',
-                // Use the summary key from Flask
-                data: (user_data.monthly_inc_summary || []).map( val => {return val === 0 ? 80 : val;}),
-                backgroundColor: '#16a34a'
-            }
-        ]
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      datasets: [{
+        label: 'Incomes',
+        data: (user_data.monthly_inc_summary || []).map( val => {return val === 0 ? samp_inc[i++] : val;}), // Example 
+        fill: true,
+        backgroundColor: 'rgba(22, 163, 74, 0.5)', // Light green fill
+        borderColor: '#00ff00',      // Thinner, softer green border
+        
+        // --- THE CLEANUP FIXES ---
+        borderWidth: 2.5,     // Makes the line less bold/thick
+        pointRadius: 0,       // REMOVES the dots (points) entirely
+        pointHitRadius: 10,   // Keeps the tooltip working when you hover
+        tension: 0.4          // Keeps the smooth curve
+      },
+      {
+        label: 'Expenses',
+        data: (user_data.monthly_exp_summary || []).map( val => {return val === 0 ? samp_exp[j++] : val;}), // Example 
+                fill: true,
+                backgroundColor: 'rgba(239, 68, 68, 0.5)', // Light red fill
+                borderColor: '#ff0000',      // Thinner, softer red border
+                
+                // --- THE CLEANUP FIXES ---
+                borderWidth: 2.5,     // Makes the line less bold
+                pointRadius: 0,       // REMOVES the dots
+                pointHitRadius: 10,   // Keeps hover interaction
+                tension: 0.4
+      }
+      ]
     },
     options: {
-      scales: {
-        y: {
-            beginAtZero: true,
-            // 1. Suggested Max provides a "ceiling" for low-data months
-            // This prevents the $50 baseline from filling the whole height
-            suggestedMax: 5000, 
-            
-            ticks: {
-                // 2. Hide the Y-axis labels for a cleaner "minimal" look
-                display: false 
-            },
-            grid: {
-                // 3. Remove grid lines to maintain the "Matte Obsidian" aesthetic
-                display: false,
-                drawBorder: false
-            }
-        },x: {
-            grid: {
-                display: false,
-                drawBorder: false
-            }
-        }
-    },
-      responsive: false,
-      plugins: {
-        tooltip: {
-          callbacks: {
-                // 4. Ensure tooltips show ₹0.00 for the baseline ghost bars
-                label: function(context) {
-                    let label = context.dataset.label || '';
-                    let value = context.parsed.y;
-                    return value <= 80 ? `${label}: ₹0.00` : `${label}: ₹${value.toLocaleString()}`;
+        responsive: true,
+        maintainAspectRatio: false, // Ensures it fits your new smaller card layout
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.05)' // Subtle grid for dark mode
                 }
             },
-          enabled: false,
+            x: {
+                grid: {
+                    display: false
+                }
+            }
         },
-
-        title: {
-          display: true,
-          text: "Revenue Trends",
-          font: {
-            size: 18,
-            weight: "bold",
-          },
-          position: "bottom",
+        plugins: {
+            legend: {
+            display: true,
+            position: 'top',
+            align: 'end', // This shifts the legend to the right end
+            labels: {
+                boxWidth: 14, // Smaller colored boxes for a cleaner look
+                padding: 20,  // Space between legends and the chart
+                lineWidth: 0,
+                color: '#616569', // Matches your dark mode text
+                font: {
+                    size: 14,
+                    family: "'Poppins', sans-serif",
+                    weight: "bold"
+                }
+            }
         },
-
-        legend: {
-          display: true,
-          position: "bottom",
-          align: "end",
-          labels: {
-            font: {
-              weight: "bold",
-            },
-            boxWidth: 13,
-          },
-        },
-      },
-    },
-  });
+      }
+    }
+});
 
   // Doughnut Chart
   doughnutChart = new Chart(doughCtx, {
@@ -356,6 +331,7 @@ document.querySelector('.date-picker').innerHTML = formattedDate;
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       cutout: 40,
       plugins: {
         legend: {
@@ -417,9 +393,9 @@ document.getElementById("incomeForm").addEventListener("submit", (e) => {
       const dateObj = new Date(dateInput);
       const monthIndex = dateObj.getMonth();
       
-      if (barChart) {
-        barChart.data.datasets[1].data[monthIndex] += amt;
-        barChart.update();
+      if (areaChart) {
+        areaChart.data.datasets[0].data[monthIndex] += amt;
+        areaChart.update();
       }
     }
   })
@@ -476,9 +452,9 @@ document.getElementById("expenseForm").addEventListener('submit', (e) => {
       const monthIndex = dateObj.getMonth();
       
       // FIX: Use explicit index 0 for Expenses instead of undefined variable
-      if (barChart) {
-          barChart.data.datasets[0].data[monthIndex] += amt; 
-          barChart.update();
+      if (areaChart) {
+          areaChart.data.datasets[1].data[monthIndex] += amt; 
+          areaChart.update();
       }
 
       if (doughnutChart) {
@@ -557,7 +533,7 @@ function generateFinancialInsights() {
     if (topIncomeArray.length > 0) {
         panel1Html += `
             <div class="insight-line">
-                Your highest earning this week was <span class="insight-badge badge-income">${topIncomeArray[0][0]}</span>, 
+                Your highest earning category was <span class="insight-badge badge-income">${topIncomeArray[0][0]}</span>, 
                 bringing in <span class="text-highlight income-color">₹${topIncomeArray[0][1].toLocaleString('en-IN')}</span>.
             </div>`;
     } else {
