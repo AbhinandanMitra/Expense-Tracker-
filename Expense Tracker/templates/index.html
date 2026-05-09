@@ -14,11 +14,14 @@
     <header>
       <h1>Welcome, {{name}}</h1>
       <div class="header-controls">
+        <button onclick="downloadMonthlyReport()" class="report-btn" title="Download Performance Report">
+            <i class="fas fa-file-pdf"></i> Export Statement
+        </button>
         <button id="theme-switch">
           <div>&#9790;</div>
           <div>&#9728;</div>
         </button>
-        <div class="date-picker">&spadesuit; 11 May, 2026</div>
+        <div class="date-picker"></div>
       </div>
     </header>
 
@@ -45,11 +48,10 @@
             <h3 class="card-title">My Card</h3>
             <button class="card-menu">&spades;</button>
           </div>
-          <div id="info">Linked to your primary wallet</div>
 
           <!-- <div class="card-chip"></div> -->
           <div class="card-number">5435 2735 0037 0015</div>
-          <div class="card-holder">{{name}}</div>
+          <div class="card-holder" style="letter-spacing: 0.07rem; text-transform:uppercase; font-size: larger; font-family: monospace; font-weight: 600;">{{name}}</div>
 
           <div class="card-logo">
             <div class="card-logo-circle logo-red"></div>
@@ -61,8 +63,8 @@
             >
               Spending Limit
             </div>
-            <div class="spending-limit" style="color: #d95301; margin-bottom: 6px;">
-              &#x20B9;7,104.00
+            <div class="spending-limit" style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #d95301; margin-bottom: 6px;">
+              
             </div>
             <!-- <div class="spending-used">used from &#x20B9;50,000.00</div> -->
             <div class="progress-bar">

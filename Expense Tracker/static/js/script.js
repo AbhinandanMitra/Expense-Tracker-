@@ -59,19 +59,30 @@ function updateDashboard(i) {
     document.querySelector(".income-amount").innerText =
       `\u20B9 ${monthlyIncome.toLocaleString()}.00`;
   else {
-    document.querySelector(".expense-amount").innerText =
-      `\u20B9 ${monthlyExpenses.toLocaleString()}.00`;
-    let spendingLimit = 12000;
-    const usedAmount = monthlyExpenses;
-    const percentage = (usedAmount / spendingLimit) * 100;
-    document.querySelector(".spending-limit").textContent = `${(
-      spendingLimit - usedAmount
-    ).toLocaleString()}.00`;
-    document.querySelector(".progress-fill").style.width = `${Math.min(
-      percentage,
-      100,
-    )}%`;
-  }
+        const spendingLimit = 25000;
+        const usedAmount = monthlyExpenses;
+        const percentage = (usedAmount / spendingLimit) * 100;
+        
+        const remainingText = document.querySelector(".spending-limit");
+        const progressFill = document.querySelector(".progress-fill");
+
+        // Calculate color based on percentage
+        let statusColor = "#16a34a"; // Default Green (Low)
+        if (percentage > 80) {
+            statusColor = "#ef4444"; // Red (High)
+        } else if (percentage > 50) {
+            statusColor = "#fcc419"; // Orange/Amber (Medium)
+        }
+
+        // Apply adaptive colors
+        if (remainingText) remainingText.style.color = statusColor;
+        if (progressFill) {
+            progressFill.style.width = `${Math.min(percentage, 100)}%`;
+            progressFill.style.backgroundColor = statusColor;
+        }
+
+        document.querySelector(".spending-limit").textContent = `\u20B9 ${(spendingLimit - usedAmount).toLocaleString()}.00`;
+    }
 }
 
 function updateTransactionsTable() {
@@ -163,15 +174,32 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTransactionsTable();
 });
 
+//report download
+function downloadMonthlyReport() {
+    // Grab active month (e.g. from data payloads or a localized date object)
+    const activeDate = new Date(); // Or map to the active dashboard date variable
+    const monthString = activeDate.toISOString().slice(0, 7); // Generates "YYYY-MM" (e.g. "2026-05")
+    
+    // Redirect browser to trigger Flask's binary download stream
+    window.location.href = `/download-report/${monthString}`;
+}
+
 
 // dark mode
 
 const themeSwitch = document.getElementById("theme-switch");
 
 themeSwitch.addEventListener("click", () => {
-  const isDark = document.body.classList.toggle("dark-mode");
-  if (isDark) localStorage.setItem("dark-mode", "active");
-  else localStorage.setItem("dark-mode", "inactive");
+  const isDarkMode = document.body.classList.toggle('dark-mode');
+    const themeBtn = document.getElementById('theme-switch');
+
+    if (isDarkMode) {
+        // Use the Sun symbol for switching back to light mode
+        themeBtn.innerHTML = '<span style="color: white;">&#9728;</span>'; 
+    } else {
+        // Use the Moon symbol
+        themeBtn.innerHTML = '&#9790;';
+    }
 });
 
 const items = document.querySelectorAll(".accordion button");
@@ -203,6 +231,19 @@ const categoryData = {
 
 // 2. Initialize Charts on Page Load
 window.onload = () => {
+  const now = new Date();
+const year = now.getFullYear();
+
+// Add 1 to month and pad with a leading zero if less than 10
+const month = String(now.getMonth() + 1).padStart(2, '0');
+
+// Pad the day with a leading zero as well
+const day = String(now.getDate()).padStart(2, '0');
+
+const formattedDate = `${day}-${month}-${year}`; 
+// Result: "2026-05-08"
+// Use a dot (.) for classes, just like in CSS
+document.querySelector('.date-picker').innerHTML = formattedDate;
   const barCtx = document.getElementById("myChart").getContext("2d");
   const doughCtx = document.getElementById("myDough").getContext("2d");
 
@@ -215,21 +256,52 @@ window.onload = () => {
             {
                 label: 'Expenses',
                 // Use the summary key from Flask
-                data: user_data.monthly_exp_summary || Array(12).fill(0), 
+                data: (user_data.monthly_exp_summary || []).map( val => {return val === 0 ? 80 : val;}), 
                 backgroundColor: '#ef4444'
             },
             {
                 label: 'Incomes',
                 // Use the summary key from Flask
-                data: user_data.monthly_inc_summary || Array(12).fill(0),
+                data: (user_data.monthly_inc_summary || []).map( val => {return val === 0 ? 80 : val;}),
                 backgroundColor: '#16a34a'
             }
         ]
     },
     options: {
+      scales: {
+        y: {
+            beginAtZero: true,
+            // 1. Suggested Max provides a "ceiling" for low-data months
+            // This prevents the $50 baseline from filling the whole height
+            suggestedMax: 5000, 
+            
+            ticks: {
+                // 2. Hide the Y-axis labels for a cleaner "minimal" look
+                display: false 
+            },
+            grid: {
+                // 3. Remove grid lines to maintain the "Matte Obsidian" aesthetic
+                display: false,
+                drawBorder: false
+            }
+        },x: {
+            grid: {
+                display: false,
+                drawBorder: false
+            }
+        }
+    },
       responsive: false,
       plugins: {
         tooltip: {
+          callbacks: {
+                // 4. Ensure tooltips show ₹0.00 for the baseline ghost bars
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    let value = context.parsed.y;
+                    return value <= 80 ? `${label}: ₹0.00` : `${label}: ₹${value.toLocaleString()}`;
+                }
+            },
           enabled: false,
         },
 

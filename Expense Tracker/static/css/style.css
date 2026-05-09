@@ -1,11 +1,16 @@
-:root{
-    --bg-color: white;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+
+:root {
+    --bg-color: #ffffff;
+    --card-bg: #f8fafc;
     --text-color: #121212;
 }
 
-body.dark-mode{
-    --bg-color: #121212f5;
-    --text-color: #ffffff;
+body.dark-mode {
+    --bg-color: #121212;    /* Matte Black Background */
+    --card-bg: #1e1e1e;     /* Deep Grey Card Color */
+    --text-color: #e0e0e0;  /* Soft White Text */
 }
 
 *{
@@ -22,7 +27,7 @@ body.dark-mode{
 }
 
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: ITC Avant Garde, sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
     line-height: 1.5;
@@ -662,11 +667,6 @@ main {
 
  /* Faq section  */
 
-/* =================================================================
-   EQUAL-HEIGHT FAQ COMPONENT & TINTED PANEL ENGINE
-   ================================================================= */
-
-/* Container Setup: Overrides flex-start alignment from .bottom-layer-wrapper to stretch perfectly down */
 .faq-container {
     align-self: stretch; 
     flex: 1;
@@ -700,12 +700,7 @@ main {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.dash-card_1{
-    border-left: 8px solid #2e8b57;
-}
-.dash-card_2{
-    border-left: 8px solid rgba(245, 26, 26, 0.993);
-}
+
 body.dark-mode .accordion_item {
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -749,9 +744,7 @@ button[aria-expanded="true"] .accordion_title {
     font-weight: 600;
 }
 
-/* =================================================================
-   CLEAN PLUS/MINUS SIGNS (NO ROTATION/TRANSFORM SPIN ANIMATIONS)
-   ================================================================= */
+
 .accordion_button .icon {
     display: flex;
     align-items: center;
@@ -795,9 +788,7 @@ button[aria-expanded="true"] .icon::after {
     display: none;
 }
 
-/* =================================================================
-   TINTED DROP-DOWN SLIDING ACCORDION CONTENTS
-   ================================================================= */
+
 .accordion_content {
     max-height: 0;
     overflow: hidden;
@@ -846,7 +837,7 @@ button[aria-expanded="true"] + .accordion_content {
 .filter-bar {
     margin: 1.5rem 2rem;
     padding: 0.75rem;
-    background: var(--bg-color);
+    /* background: var(--bg-color); */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     display: flex;
@@ -994,4 +985,128 @@ body.dark-mode .text-highlight {
     color: #64748b;
     font-style: italic;
     font-size: 0.9rem;
+}
+
+.card, .accordion_content, header {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle edge definition */
+}
+
+.dash-card_1{
+    border-left: 8px solid #2e8b57;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.dash-card_2{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 8px solid rgba(245, 26, 26, 0.993);
+}
+
+.card.my-card {
+    color: #95a1b8 !important; /* Forces all text inside the credit card to white */
+}
+
+.card.my-card .card-number, 
+.card.my-card .card-holder, 
+.card.my-card .spending-limit-label {
+    color: rgba(255, 255, 255, 0.9); /* Slightly soft white for labels */
+}
+
+.card.my-card .spending-amount {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+#theme-switch {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    fill: var(--text-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Dark mode specific adjustments for the button */
+body.dark-mode #theme-switch {
+    background: #2a2a2a;
+    border-color: #3d3d3d;
+    /* color: #fcc419; Amber glow in dark mode */
+    box-shadow: 0 0 15px rgba(252, 196, 25, 0.2);
+    
+    color: #ffffff !important;
+    filter: brightness(1) invert(0); 
+}
+
+form label {
+    font-family: 'Inter', sans-serif; /* Clean, modern sans-serif */
+    font-size: 0.875rem;             /* Slightly smaller for a refined look */
+    font-weight: 500;                /* Medium weight for clarity */
+    color: var(--text-color);        /* Adaptive to your dark/light mode */
+    margin-bottom: 0.5rem;           /* Breathing room above the input */
+    display: block;                  /* Ensures label stays above the input */
+    letter-spacing: 0.01em;          /* Subtle tracking for elegance */
+    opacity: 0.85;                   /* Softens the label to prioritize the input data */
+}
+
+/* Specific refinement for the Input Fields */
+form input, form select, form textarea {
+    font-family: 'Inter', sans-serif;
+    padding: 0.3rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.dark-mode form input, 
+body.dark-mode form select {
+    border-color: #333;
+    background-color: #1a1a1a; /* Matches your "Matte Obsidian" theme */
+}
+
+form input:focus {
+    outline: none;
+    border-color: var(--accent-gold); /* Uses your gold highlight color on click */
+    box-shadow: 0 0 0 3px rgba(252, 196, 25, 0.1);
+}
+
+.modal-content {
+    /* padding: 2.5rem; */
+    border-radius: 10px;
+    background-color: var(--card-bg);
+}
+
+.form-group {
+    margin-bottom: 1rem; /* Consistent spacing between different inputs */
+}
+
+.report-btn {
+    background-color: indianred; /* Matches gold theme accent */
+    color: #121212 !important;                    /* High contrast text */
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* Dark Mode adjustment for Button */
+body.dark-mode .report-btn {
+    color: wheat !important;
 }
