@@ -14,14 +14,13 @@
     <header>
       <div class="user-profile">
         <div class="avatar-wrapper">
-            <img src="{{ url_for('static', filename='profile-user-svgrepo-com.svg') }}" alt="User Profile" class="user-avatar">
+            <img src="{{ url_for('static', filename='wallet-svgrepo-com.svg') }}" alt="User Profile" class="user-avatar">
         </div>
         <span class="user-name" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">{{name}}</span>
       </div>
       <div class="header-controls">
         <button id="theme-switch">
-          <div>&#9790;</div>
-          <div>&#9728;</div>
+          <div><img src="{{ url_for('static', filename='half-moon-moon-svgrepo-com.svg') }}" id="theme-icon"/></div>
         </button>
         <div class="date-picker"></div>
       </div>
@@ -216,7 +215,7 @@
         onclick="openIncomeModal()"
         title="Add Income"
       >
-        &#9769;
+        +
       </button>
       <button
         class="fab fab-expense"
@@ -372,7 +371,7 @@
 
     <hr style="border: 2px solid black; width: 20px;">
     
-    <p style="font-weight: 500; font-size: 0.9rem; letter-spacing: 0.07em; padding: 0.5rem; color: #64748b;">&copy; Abhinandan Mitra & Ronik Singh</p>
+    <p style="font-weight: 500; font-size: 0.9rem; letter-spacing: 0.07em; padding: 0.5rem; color: #64748b;">&copy; {{name}}</p>
 
     <div id="user-container" data-users='{{ userData | tojson | safe}}'></div>
 

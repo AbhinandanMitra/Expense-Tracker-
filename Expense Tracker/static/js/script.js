@@ -176,18 +176,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // dark mode
 
-const themeSwitch = document.getElementById("theme-switch");
+const themeSwitch = document.getElementById('theme-switch');
+const themeIcon = document.getElementById('theme-icon'); 
 
-themeSwitch.addEventListener("click", () => {
-  const isDarkMode = document.body.classList.toggle('dark-mode');
-    const themeBtn = document.getElementById('theme-switch');
-
+themeSwitch.addEventListener('click', () => {
+    // 1. Toggle the dark-mode class on the body
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    
+    // 2. Switch the icon source based on the new mode
     if (isDarkMode) {
-        // Use the Sun symbol for switching back to light mode
-        themeBtn.innerHTML = '<span style="color: white;">&#9728;</span>'; 
-    } else {
-        // Use the Moon symbol
-        themeBtn.innerHTML = '&#9790;';
+        themeIcon.src = "/static/sun-svgrepo-com.svg"; // Show sun in dark mode
+        themeIcon.style = "filter: brightness(0) invert(1); height: 26px; width: 26px";
+        
+      } else {
+        themeIcon.src = "/static/half-moon-moon-svgrepo-com.svg"; // Show moon in light mode
+        themeIcon.style = "filter: brightness(1) invert(0)";
+      }
+      
+      // 3. Save the preference
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    });
+    
+    // 4. Check for saved theme on page load to prevent "flash" of wrong theme
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.src = "/static/sun-svgrepo-com.svg";
+        themeIcon.style = "filter: brightness(0) invert(1); height: 26px; width: 26px";
+      } else {
+        themeIcon.src = "/static/half-moon-moon-svgrepo-com.svg";
+        themeIcon.style = "filter: brightness(1) invert(0)";
     }
 });
 
@@ -553,9 +572,6 @@ function generateFinancialInsights() {
     
     if (p1) p1.innerHTML = panel1Html;
 
-    // =================================================================
-    // ACCORDION PANEL 2: Insight on Weekly Expenditures
-    // =================================================================
     let totalExpenseLastWeek = 0;
     
     lastWeekTrans.forEach(t => {
@@ -566,7 +582,7 @@ function generateFinancialInsights() {
 
     let panel2Html = `
         <div class="insight-wrapper">
-            <div class="insight-line">You spent <span class="text-highlight font-medium">₹${totalExpenseThisWeek.toLocaleString('en-IN')}</span> this week.</div>`;
+            <div class="insight-line">You spent <span class="text-highlight font-medium">₹ ${totalExpenseThisWeek.toLocaleString('en-IN')}</span> this week.</div>`;
 
     if (totalExpenseLastWeek > 0) {
         const difference = totalExpenseThisWeek - totalExpenseLastWeek;
@@ -592,9 +608,6 @@ function generateFinancialInsights() {
     
     if (p2) p2.innerHTML = panel2Html;
 
-    // =================================================================
-    // ACCORDION PANEL 3: Insight on Savings
-    // =================================================================
     let netSavings = totalIncomeThisWeek - totalExpenseThisWeek;
     let savingsPercentage = totalIncomeThisWeek > 0 ? ((netSavings / totalIncomeThisWeek) * 100).toFixed(0) : 0;
 
@@ -605,7 +618,7 @@ function generateFinancialInsights() {
     } else if (netSavings > 0) {
         panel4Html += `
             <div class="insight-status status-green-box" style="font-size: 1rem; margin-bottom: 8px;">
-                🎉 You are on the safer side!
+                 You are on the safer side!
             </div>
             <div class="insight-line">
                 You saved <span class="income-color font-bold">₹${netSavings.toLocaleString('en-IN')}</span> this week. 
@@ -615,7 +628,7 @@ function generateFinancialInsights() {
     } else if (netSavings === 0) {
         panel4Html += `
             <div class="insight-status status-orange-box" style="font-size: 1rem; margin-bottom: 8px;">
-                ⚖️ Transactional Equilibrium.
+                 Transactional Equilibrium.
             </div>
             <div class="insight-line">
                 You spent exactly what you earned this week. Try to spend a bit less next week to ensure gradual wealth.
@@ -624,7 +637,7 @@ function generateFinancialInsights() {
     } else {
         panel4Html += `
             <div class="insight-status status-red-box" style="font-size: 0.9rem; margin-bottom: 8px;">
-                ⚠️ You have spent more than you earned.
+                 You have spent more than you earned.
             </div>
             <div class="insight-line">
                 You went over budget by <span class="expense-color font-bold">₹${Math.abs(netSavings).toLocaleString('en-IN')}</span> this week. 

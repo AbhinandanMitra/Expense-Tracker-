@@ -103,11 +103,8 @@ main {
     font-size: 1.2rem;
     vertical-align: middle;
 }
-#theme-switch div{
-    font-size: 1.2rem;
-    color: black;
-    vertical-align: middle;
-}
+
+
 .dashboard-grid {
     grid-column: 1 / span 2; /* Forces the top cards to span the entire top row */
     display: grid;
@@ -127,7 +124,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.1rem;
+    margin-bottom: 1.5rem;
     height: 2rem;
 }
 
@@ -486,8 +483,8 @@ main {
 }
 
 .fab{
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: none;
     display: flex;
@@ -501,6 +498,7 @@ main {
 
 .fab-income{
     background-color: #0ba766;
+    font-size: 42px;
 }
 .fab-expense{
     background-color: #ef4444;
@@ -564,6 +562,7 @@ main {
     display: block;
     font-weight: 500;
     color: var(--text-color);
+    margin-bottom: 3px;
 }
 
 .form-input{
@@ -667,37 +666,38 @@ main {
 
 
 #theme-switch{
-    height: 40px;
     width: 40px;
-    padding: 0;
-    border-radius: 50%;
-    display: flex;
-    border: none;
-    justify-content: center;
-    align-items: center;
+    height: 40px;
+    border-radius: 50%; /* Makes it a perfect circle */
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0; /* Remove default padding */
+    overflow: hidden;
 }
 
-#theme-switch div{
-    fill: #1e293b;
+#theme-switch img, 
+#theme-switch svg {
+    width: 20px;  
+    height: 20px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
 }
 
-#theme-switch div:last-child{
-    display: none;
-}
 
-.dark-mode #theme-switch div:first-child{
-    display: none;
-}
-.dark-mode #theme-switch div:last-child{
-    display: block;
+body.dark-mode #theme-switch {
+    background: #2a2a2a;
+    border-color: #3d3d3d;
+    box-shadow: 0 0 15px rgba(24, 1, 1, 0.2);
+    filter: brightness(1) invert(0); 
 }
 
  /* Faq section  */
 
-
-
-/* Internal Layout Setup */
 
 
 .faq_heading {
@@ -899,6 +899,7 @@ button[aria-expanded="true"] + .accordion_content {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+
 /* Text Group Headings INSIDE Dropdown */
 optgroup {
     font-weight: 600;
@@ -1045,32 +1046,6 @@ body.dark-mode .text-highlight {
     font-weight: 700;
 }
 
-#theme-switch {
-    background: var(--card-bg);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    fill: var(--text-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* Dark mode specific adjustments for the button */
-body.dark-mode #theme-switch {
-    background: #2a2a2a;
-    border-color: #3d3d3d;
-    /* color: #fcc419; Amber glow in dark mode */
-    box-shadow: 0 0 15px rgba(252, 196, 25, 0.2);
-    
-    color: #ffffff !important;
-    filter: brightness(1) invert(0); 
-}
-
 form label {
     font-family: 'Inter', sans-serif; /* Clean, modern sans-serif */
     font-size: 0.875rem;             /* Slightly smaller for a refined look */
@@ -1115,27 +1090,6 @@ form input:focus {
     margin-bottom: 1rem; /* Consistent spacing between different inputs */
 }
 
-.report-btn {
-    background-color: indianred; /* Matches gold theme accent */
-    color: #121212 !important;                    /* High contrast text */
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
-/* Dark Mode adjustment for Button */
-body.dark-mode .report-btn {
-    color: wheat !important;
-}
 
 /* --- COMPACT TOP CARDS SECTION --- */
 .dashboard-grid .card {
